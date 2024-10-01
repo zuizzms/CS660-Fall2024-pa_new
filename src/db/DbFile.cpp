@@ -52,55 +52,55 @@ DbFile::~DbFile() {
 const std::string &DbFile::getName() const { return name; }
 
 void DbFile::readPage(Page &page, const size_t id) const {
-  if (id >= numPages) {
-    throw std::out_of_range("Page ID out of range");
-  }
-
-  // Open the file
-  int file = open(name.c_str(), O_RDONLY);
-  if (file < 0) {
-    throw std::runtime_error("Unable to open file for reading: " + name);
-  }
-
-  // Calculate the byte offset for the page
-  off_t offset = id * DEFAULT_PAGE_SIZE;
-
-  // Read the page into the provided Page object
-  if (pread(file, page.getData(), DEFAULT_PAGE_SIZE, offset) != DEFAULT_PAGE_SIZE) {
-    close(file);
-    throw std::runtime_error("Failed to read page from file");
-  }
-
-  // Close the file
-  close(file);
-
-  reads.push_back(id); // Log the read
+  // if (id >= numPages) {
+  //   throw std::out_of_range("Page ID out of range");
+  // }
+  //
+  // // Open the file
+  // int file = open(name.c_str(), O_RDONLY);
+  // if (file < 0) {
+  //   throw std::runtime_error("Unable to open file for reading: " + name);
+  // }
+  //
+  // // Calculate the byte offset for the page
+  // off_t offset = id * DEFAULT_PAGE_SIZE;
+  //
+  // // Read the page into the provided Page object
+  // if (pread(file, page.data(), DEFAULT_PAGE_SIZE, offset) != DEFAULT_PAGE_SIZE) {
+  //   close(file);
+  //   throw std::runtime_error("Failed to read page from file");
+  // }
+  //
+  // // Close the file
+  // close(file);
+  //
+  // reads.push_back(id); // Log the read
 }
 
 void DbFile::writePage(const Page &page, const size_t id) const {
-  if (id >= numPages) {
-    throw std::out_of_range("Page ID out of range");
-  }
-
-  // Open the file
-  int file = open(name.c_str(), O_WRONLY);
-  if (file < 0) {
-    throw std::runtime_error("Unable to open file for writing: " + name);
-  }
-
-  // Calculate the byte offset for the page
-  off_t offset = id * DEFAULT_PAGE_SIZE;
-
-  // Write the page data to the file
-  if (pwrite(file, page.getData(), DEFAULT_PAGE_SIZE, offset) != DEFAULT_PAGE_SIZE) {
-    close(file);
-    throw std::runtime_error("Failed to write page to file");
-  }
-
-  // Close the file
-  close(file);
-
-  writes.push_back(id); // Log the write
+  // if (id >= numPages) {
+  //   throw std::out_of_range("Page ID out of range");
+  // }
+  //
+  // // Open the file
+  // int file = open(name.c_str(), O_WRONLY);
+  // if (file < 0) {
+  //   throw std::runtime_error("Unable to open file for writing: " + name);
+  // }
+  //
+  // // Calculate the byte offset for the page
+  // off_t offset = id * DEFAULT_PAGE_SIZE;
+  //
+  // // Write the page data to the file
+  // if (pwrite(file, page.data(), DEFAULT_PAGE_SIZE, offset) != DEFAULT_PAGE_SIZE) {
+  //   close(file);
+  //   throw std::runtime_error("Failed to write page to file");
+  // }
+  //
+  // // Close the file
+  // close(file);
+  //
+  // writes.push_back(id); // Log the write
 }
 
 const std::vector<size_t> &DbFile::getReads() const { return reads; }

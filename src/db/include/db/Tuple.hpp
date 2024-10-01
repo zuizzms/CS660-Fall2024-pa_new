@@ -22,7 +22,7 @@ class TupleDesc {
 private:
  std::vector<type_t> types;          // Vector to hold types of fields
  std::vector<std::string> names;     // Vector to hold names of fields
-
+ std::vector<size_t> offsets;       // Vector to hold precomputed offsets for each field
 public:
   TupleDesc() = default;
   /**

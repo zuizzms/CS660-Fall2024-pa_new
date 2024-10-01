@@ -32,11 +32,30 @@ TupleDesc::TupleDesc(const std::vector<type_t> &types, const std::vector<std::st
   }
 
   std::unordered_set<std::string> nameSet;
-  for (const auto& name : names) {
-    if (nameSet.find(name) != nameSet.end()) {
+  size_t currentOffset = 0; // Initialize currentOffset to 0
+
+  for (size_t i = 0; i < names.size(); ++i) {
+    // Check for unique field names
+    if (nameSet.find(names[i]) != nameSet.end()) {
       throw std::invalid_argument("Field names must be unique");
     }
-    nameSet.insert(name);
+    nameSet.insert(names[i]);
+
+    // Calculate and store the offset for each field
+    offsets.push_back(currentOffset); // Store the current offset for this field
+
+    // Update the current offset for the next field
+    switch (types[i]) {
+    case type_t::INT:
+      currentOffset += sizeof(int);
+      break;
+    case type_t::DOUBLE:
+      currentOffset += sizeof(double);
+      break;
+    case type_t::CHAR:
+      currentOffset += 64;  // Assuming CHAR(64)
+      break;
+    }
   }
 }
 
@@ -66,21 +85,10 @@ size_t TupleDesc::index_of(const std::string &name) const {
 }
 
 size_t TupleDesc::offset_of(const size_t &index) const {
-  size_t offset = 0;
-  for (size_t i = 0; i < index; ++i) {
-    switch (types[i]) {
-    case type_t::INT:
-      offset += sizeof(int);
-      break;
-    case type_t::DOUBLE:
-      offset += sizeof(double);
-      break;
-    case type_t::CHAR:
-      offset += 64;  // Assuming CHAR(64)
-      break;
-    }
+  if (index >= offsets.size()) {
+    throw std::out_of_range("Invalid field index");
   }
-  return offset;
+  return offsets[index]; // Return the precomputed offset for this index
 }
 
 
